@@ -1,0 +1,38 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-3dviewer-dev-125957-authRole",
+      "UnauthRoleArn": "arn:aws:iam::126050506701:role/amplify-3dviewer-dev-125957-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::126050506701:role/amplify-3dviewer-dev-125957-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-3dviewer-dev-125957-deployment",
+      "UnauthRoleName": "amplify-3dviewer-dev-125957-unauthRole",
+      "StackName": "amplify-3dviewer-dev-125957",
+      "StackId": "arn:aws:cloudformation:us-east-1:126050506701:stack/amplify-3dviewer-dev-125957/75d9cb20-c935-11ec-870f-12cf082cb253",
+      "AmplifyAppId": "d1cqqug1b6aqeq"
+    },
+    "categories": {
+      "function": {
+        "HelloHandler": {
+          "deploymentBucketName": "amplify-3dviewer-dev-125957-deployment",
+          "s3Key": "amplify-builds/HelloHandler-3762674d4132744e456c-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1cqqug1b6aqeq",
+          "type": "manual"
+        }
+      },
+      "auth": {
+        "3dviewerd88b5c43": {}
+      },
+      "storage": {
+        "3dviewer3412c6d8": {
+          "bucketName": "amplify-3dviewer-dev-125957-deployment",
+          "region": "us-east-1"
+        }
+      }
+    }
+  }
+}
