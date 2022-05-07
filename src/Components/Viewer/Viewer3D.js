@@ -11,6 +11,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import logo from "../../logo.svg";
 import "../../App.css";
 import { Link } from "react-router-dom";
+import { v4 as uuid } from "uuid";
+import Popup from 'reactjs-popup';
 
 function Box() {
   return (
@@ -23,15 +25,23 @@ function Box() {
 
 const Viewer3D = () => {
   const [file, setFile] = useState("Dinosaur.glb");
+  const [data, setData] = useState("");
   const [filename, setFilename] = useState("");
   const [model3d, setModel] = useState("");
   const [wireframeState, setWireframeState] = useState(false);
+  const [modelsList, setModelsList] = useState([]);
 
   const canvasRef = useRef(null);
   const canvas = canvasRef.current;
 
+  const myAPI = "apid5ee3ce5";
+  const pathUpload = "/upload";
+  const pathModelFetch = "/modelFetch";
+
+  //Function that loads the model and keeps its info
   const onChange = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
+    setData(e.target.files[0]);
     setFilename(e.target.files[0].name);
     console.log(file);
     let reader = new FileReader();
@@ -39,10 +49,72 @@ const Viewer3D = () => {
     console.log(reader.result);
   };
 
+  // Function that saves the model to the cloud
   const onSubmit = async (e) => {
-    console.log(filename);
+
     e.preventDefault();
+    if(data==="")
+    {
+      return;
+      
+    }
+    
+    const { key } = await Storage.put(`${uuid()}.gbl`, data, {
+      contentType: "3dmodel/glb",
+    });
+    console.log(key);
+    let modelInfo = {
+      body: {
+        id: key,
+        name: filename,
+        user: 0,
+      },
+      headers: {},
+    };
+
+    API.post(myAPI, pathUpload, modelInfo)
+      .then((response) => {
+        // console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+  // Loading a model from the cloud
+  const loadModel = async (e) => {
+    // console.log(e.target.value)
+    // const modelFilePath = "df565733-2962-4fe0-86b9-34b81cb88382.gbl";
+    const modelFilePath = e.target.value;
+    const fileAccessURL = await Storage.get(modelFilePath, { expires: 60 });
+    // console.log("access url", fileAccessURL);
+    setFile(fileAccessURL);
+  };
+
+  // Fetching the available models from the cloud
+  useEffect(() => {
+    // setModels([])
+    const modelFetch = async () => {
+      let tempModels = [];
+      const user = { id: 0 };
+      await API.get(myAPI, pathModelFetch, user)
+        .then((response) => {
+          const size = Object.keys(response.Items).length;
+          let newElement = [];
+
+          for (let i = 0; i < size; i++) {
+            newElement = [response.Items[i].name, response.Items[i].id];
+            tempModels.push(newElement);
+          }
+          setModelsList(tempModels);
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    modelFetch();
+  }, []);
 
   const iterate = (obj, statee) => {
     // The function that changes the wireframe mode
@@ -61,6 +133,7 @@ const Viewer3D = () => {
     // The function that loads the model
     const gltf = useLoader(GLTFLoader, file);
     iterate(gltf.materials, wireframeState);
+    testSomething(gltf);
 
     return (
       <>
@@ -68,6 +141,12 @@ const Viewer3D = () => {
       </>
     );
   };
+  
+
+  const testSomething = (obj) => {
+    console.log(obj);
+  }
+
 
   return (
     <div className="text-black bg-white h-15  items-start container">
@@ -115,9 +194,21 @@ const Viewer3D = () => {
             </div>
 
             <div className="block mt-4 sm:inline-block sm:mt-0 text-cyan-300 hover:text-white mr-4 ">
-              <button onClick={onSubmit}>Submit</button>
+              <button onClick={onSubmit}>Save</button>
             </div>
 
+            <div className="block mt-4 sm:inline-block sm:mt-0 text-cyan-300 hover:text-white mr-4 ">
+              <label htmlFor="modelsList">Choose a model: </label>
+              <select id="modelsList" className=" " defaultValue={model3d} onChange={loadModel} >
+                {modelsList.map((model) => {
+                  return <option key={model[1]} value={model[1]}>{model[0]}</option>;
+                })}
+              </select>
+            </div>
+
+            {/* <div className="block mt-4 sm:inline-block sm:mt-0 text-cyan-300 hover:text-white mr-4 ">
+              <button onClick={loadModel}>Load</button>
+            </div> */}
           </div>
         </div>
       </nav>

@@ -21,6 +21,13 @@
       "permissions": {
         "setting": "open"
       }
+    },
+    "/modelFetch": {
+      "name": "/modelFetch",
+      "lambdaFunction": "HelloHandler",
+      "permissions": {
+        "setting": "open"
+      }
     }
   }
 }

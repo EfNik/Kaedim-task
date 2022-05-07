@@ -9,11 +9,17 @@ const bodyParser = require('body-parser');
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const awsServerlessExpress = require('aws-serverless-express');
 const app = express();
-const fileUpload = require('express-fileupload');
+// const fileUpload = require('express-fileupload');
 
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
-app.use(fileUpload());
+// app.use(fileUpload());
+
+const {
+    addModel,
+    getModels,
+    deleteModel
+} = require('./dynamo');
 
 
 const server = awsServerlessExpress.createServer(app);
@@ -41,8 +47,29 @@ app.get('/items', function(req, res) {
     res.json({ success: 'get call succeed!', items });
 });
 
-app.post('/upload',function(req,res){
-    console.log(req);
+app.get('/modelFetch', async (req, res) => {
+    console.log(req.body)
+    const userId = {id: req.body.id}
+    try {
+        // Fix the by adding the userId param
+        const models = await getModels(userId);
+        res.json(models);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong' });
+    }
+});
 
+app.post('/upload',async (req,res) => {
+
+    const model = req.body;
+    console.log(model);
+    try {
+        const newModel = await addModel(model);
+        res.json(newModel);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong' });
+    }
 });
   
