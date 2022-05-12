@@ -52,7 +52,12 @@ app.get('/modelFetch', async (req, res) => {
     const userId = {id: req.body.id}
     try {
         // Fix the by adding the userId param
+
+        // Uncomment this to work
         const models = await getModels(userId);
+        
+        //Comment this to work
+        // const models = []
         res.json(models);
     } catch (err) {
         console.error(err);
@@ -65,7 +70,11 @@ app.post('/upload',async (req,res) => {
     const model = req.body;
     console.log(model);
     try {
+        //Uncomment this to work
         const newModel = await addModel(model);
+
+        // Comment this to work
+        // const newModel = [];
         res.json(newModel);
     } catch (err) {
         console.error(err);
