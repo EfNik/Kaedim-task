@@ -18,7 +18,8 @@ app.use(awsServerlessExpressMiddleware.eventContext());
 const {
     addModel,
     getModels,
-    deleteModel
+    deleteModel,
+    getColors
 } = require('./dynamo');
 
 
@@ -59,6 +60,26 @@ app.get('/modelFetch', async (req, res) => {
         //Comment this to work
         // const models = []
         res.json(models);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong' });
+    }
+});
+
+
+app.get('/getcolors', async (req, res) => {
+    console.log(req.query.id)
+    const id = req.query.id
+    try {
+        // Fix the by adding the userId param
+
+        // Uncomment this to work
+        const model = await getColors(id);
+        
+        //Comment this to work
+        // const models = []
+        console.log(model)
+        res.json(model);
     } catch (err) {
         console.error(err);
         res.status(500).json({ err: 'Something went wrong' });

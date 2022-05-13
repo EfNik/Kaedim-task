@@ -20,6 +20,18 @@ const getModels = async (userId) => {
     return models;
 };
 
+const getColors = async (id) => {
+    // Add user Id param later
+    const params = {
+        TableName: TABLE_NAME,
+        Key: {
+            "id": id
+        },
+    };
+    const model = await dynamoClient.get(params).promise();
+    return model;
+};
+
 
 const addModel = async (model) => {
     const params = {
@@ -43,5 +55,6 @@ module.exports = {
     dynamoClient,
     getModels,
     addModel,
-    deleteModel
+    deleteModel,
+    getColors
 };

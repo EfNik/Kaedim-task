@@ -28,6 +28,13 @@
       "permissions": {
         "setting": "open"
       }
+    },
+    "/getcolors": {
+      "name": "/getcolors",
+      "lambdaFunction": "HelloHandler",
+      "permissions": {
+        "setting": "open"
+      }
     }
   }
 }

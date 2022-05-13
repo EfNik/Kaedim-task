@@ -15,7 +15,7 @@
       "function": {
         "HelloHandler": {
           "deploymentBucketName": "amplify-3dviewer-dev-125957-deployment",
-          "s3Key": "amplify-builds/HelloHandler-6c36583047486148504a-build.zip"
+          "s3Key": "amplify-builds/HelloHandler-315a6b7158574b596953-build.zip"
         }
       },
       "hosting": {
