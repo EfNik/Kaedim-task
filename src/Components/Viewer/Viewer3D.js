@@ -20,6 +20,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 const pointer = new THREE.Vector2(-1, 1);
 
 
+
 const Viewer3D = () => {
 
   //State variables
@@ -50,16 +51,6 @@ const Viewer3D = () => {
   let sceneContainer = useRef();
 
 
-
-  // const Box = () => {
-  //   return (
-  //     <mesh>
-  //       <boxBufferGeometry attach="geometry" />
-  //       <meshLambertMaterial attach="material" color="red" />
-  //     </mesh>
-  //   );
-  // };
-
   
   // Declare Api paths
   const myAPI = "apid5ee3ce5";
@@ -81,8 +72,11 @@ const Viewer3D = () => {
     setFilename(e.target.files[0].name);
 
     // Refreshing the scene
-    sceneContainer.current.innerHTML = "";
-    setTimeout(createWorld([]), 1000);
+    startTransition(() => {
+      sceneContainer.current.innerHTML = "";
+      setTimeout(createWorld([]), 1000);
+    });
+
 
   };
 
@@ -148,10 +142,16 @@ const Viewer3D = () => {
 
         if(colorGroups==undefined)
         {
-          createWorld([]);
+          startTransition(() => {
+            createWorld([]);
+          });
+          
         }
         else{
-          createWorld(colorGroups)
+          startTransition(() => {
+            createWorld(colorGroups)
+          });
+          
         }
         
       })
@@ -167,6 +167,8 @@ const Viewer3D = () => {
 
   // Fetching the available models from the cloud
   useEffect(() => {
+
+    
 
     const modelFetch = async () => {
       let tempModels = [];
@@ -188,15 +190,20 @@ const Viewer3D = () => {
           console.log(error);
         });
     };
-    modelFetch();
 
-    createWorld([]);
+
+
+    
+    startTransition(() => {
+      modelFetch();
+      createWorld([])
+    });
+
 
     const pointer = new THREE.Vector2();
     const raycaster = new THREE.Raycaster();
 
  
-    // const myBox = Box();
 
 
   }, []);
@@ -206,7 +213,10 @@ const Viewer3D = () => {
     fileURL = file;
     sceneContainer.current.innerHTML = "";
    
-    createWorld([]);
+    startTransition(() => {
+      createWorld([])
+    });
+    
   };
 
   const createWorld = async (colorArray) => {
@@ -254,9 +264,12 @@ const Viewer3D = () => {
       }),
     ];
 
-
+    
     // Adding model to scene
+   
     let myModel = await Model(colorArray);
+   
+    
     myScene.add(myModel);
 
     // Orbit controlls to rotate and zoom in/out
@@ -457,6 +470,7 @@ const Viewer3D = () => {
   document.body.appendChild(link); 
 
   return (
+    <Suspense fallback={<h1>Loading profile...</h1>}>
     <div className="text-black bg-white h-15  items-start container">
       {/* The navbar */}
       <nav className="flex items-center justify-between flex-wrap bg-gray-600 p-2 w-screen">
@@ -554,10 +568,12 @@ const Viewer3D = () => {
         </div>
       </nav>
 
-      <Suspense>
+      
         <div ref={sceneContainer} className="container"></div>
-      </Suspense>
+      
     </div>
+   
+    </Suspense>
   );
 };
 

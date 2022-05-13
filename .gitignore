@@ -44,4 +44,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 
-./amplify/backend/function/HelloHandeler/src/.env
+.\amplify\backend\function\HelloHandler\src\.env
